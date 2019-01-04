@@ -7,6 +7,7 @@
 <html>
 <head>
 	<title>Toolbar example for mxGraph</title>
+	<meta charset="UTF-8">
 
 	<!-- Sets the basepath for the library if not in same directory -->
 	<script type="text/javascript">
@@ -23,10 +24,6 @@
 		// from the onLoad event handler of the document (see below).
 		function main()
 		{
-			// Defines an icon for creating new connections in the connection handler.
-			// This will automatically disable the highlighting of the source vertex.
-			mxConnectionHandler.prototype.connectImage = new mxImage('images/connector.gif', 16, 16);
-		
 			// Checks if browser is supported
 			if (!mxClient.isBrowserSupported())
 			{
@@ -36,27 +33,25 @@
 			}
 			else
 			{
-				// Creates the div for the toolbar
+				// Creates the div for the toolbar 最左边的 toolbar
 				var tbContainer = document.createElement('div');
 				tbContainer.style.position = 'absolute';
 				tbContainer.style.overflow = 'hidden';
 				tbContainer.style.padding = '2px';
 				tbContainer.style.left = '0px';
 				tbContainer.style.top = '26px';
-				tbContainer.style.width = '24px';
+				tbContainer.style.width = '84px';
 				tbContainer.style.bottom = '0px';
-				
 				document.body.appendChild(tbContainer);
-			
-				// Creates new toolbar without event processing
+				// Creates new toolbar with event processing
 				var toolbar = new mxToolbar(tbContainer);
-				toolbar.enabled = false
+				toolbar.enabled = true
 				
-				// Creates the div for the graph
+				// Creates the div for the graph 右边的画布部分
 				container = document.createElement('div');
 				container.style.position = 'absolute';
 				container.style.overflow = 'hidden';
-				container.style.left = '24px';
+				container.style.left = '84px';
 				container.style.top = '26px';
 				container.style.right = '0px';
 				container.style.bottom = '0px';
@@ -77,6 +72,97 @@
 				var model = new mxGraphModel();
 				var graph = new mxGraph(container, model);
 				graph.dropEnabled = true;
+
+				///////////////////////////--- 节点上的删除操作 start ---///////////////////////////
+				// Specifies the URL and size of the new control
+				// 节点上删除操作的图标
+				var deleteImage = new mxImage('editors/images/overlays/forbidden.png', 16, 16);
+				// Overridden to add an additional control to the state at creation time
+				mxCellRendererCreateControl = mxCellRenderer.prototype.createControl;
+				mxCellRenderer.prototype.createControl = function(state)
+				{
+					mxCellRendererCreateControl.apply(this, arguments);
+
+					var graph = state.view.graph;
+
+					if (graph.getModel().isVertex(state.cell))
+					{
+						if (state.deleteControl == null)
+						{
+							var b = new mxRectangle(0, 0, deleteImage.width, deleteImage.height);
+							state.deleteControl = new mxImageShape(b, deleteImage.src);
+							state.deleteControl.dialect = graph.dialect;
+							state.deleteControl.preserveImageAspect = false;
+
+							this.initControl(state, state.deleteControl, false, function (evt)
+							{
+								if (graph.isEnabled())
+								{
+									graph.removeCells([state.cell]);
+									mxEvent.consume(evt);
+								}
+							});
+						}
+					}
+					else if (state.deleteControl != null)
+					{
+						state.deleteControl.destroy();
+						state.deleteControl = null;
+					}
+				};
+
+				// Helper function to compute the bounds of the control
+				var getDeleteControlBounds = function(state)
+				{
+					if (state.deleteControl != null)
+					{
+						var oldScale = state.deleteControl.scale;
+						var w = state.deleteControl.bounds.width / oldScale;
+						var h = state.deleteControl.bounds.height / oldScale;
+						var s = state.view.scale;
+
+						return (state.view.graph.getModel().isEdge(state.cell)) ?
+								new mxRectangle(state.x + state.width / 2 - w / 2 * s,
+										state.y + state.height / 2 - h / 2 * s, w * s, h * s)
+								: new mxRectangle(state.x + state.width - w * s,
+										state.y, w * s, h * s);
+					}
+
+					return null;
+				};
+
+				// Overridden to update the scale and bounds of the control
+				mxCellRendererRedrawControl = mxCellRenderer.prototype.redrawControl;
+				mxCellRenderer.prototype.redrawControl = function(state)
+				{
+					mxCellRendererRedrawControl.apply(this, arguments);
+
+					if (state.deleteControl != null)
+					{
+						var bounds = getDeleteControlBounds(state);
+						var s = state.view.scale;
+
+						if (state.deleteControl.scale != s || !state.deleteControl.bounds.equals(bounds))
+						{
+							state.deleteControl.bounds = bounds;
+							state.deleteControl.scale = s;
+							state.deleteControl.redraw();
+						}
+					}
+				};
+				// Overridden to remove the control if the state is destroyed
+				mxCellRendererDestroy = mxCellRenderer.prototype.destroy;
+				mxCellRenderer.prototype.destroy = function(state)
+				{
+					mxCellRendererDestroy.apply(this, arguments);
+
+					if (state.deleteControl != null)
+					{
+						state.deleteControl.destroy();
+						state.deleteControl = null;
+					}
+				};
+				//--------------------------------  节点上的删除操作 end --------------------------------
 				
 				// Matches DnD inside the graph
 				mxDragSource.prototype.getDropTarget = function(graph, x, y)
@@ -95,7 +181,7 @@
 				graph.setConnectable(true);
 				graph.setMultigraph(false);
 
-				// Stops editing on enter or escape keypress
+				// Stops editing on enter or escape keypress 按Enter或Escape键时停止编辑
 				var keyHandler = new mxKeyHandler(graph);
 				var rubberband = new mxRubberband(graph);
 				
@@ -106,39 +192,39 @@
 				
 					addToolbarItem(graph, toolbar, vertex, icon);
 				};
-				
-				addVertex('editors/images/swimlane.gif', 120, 160, 'shape=swimlane;startSize=20;');
-				addVertex('editors/images/rectangle.gif', 100, 40, '');
-				addVertex('editors/images/rounded.gif', 100, 40, 'shape=rounded');
-				addVertex('editors/images/ellipse.gif', 40, 40, 'shape=ellipse');
-				addVertex('editors/images/rhombus.gif', 40, 40, 'shape=rhombus');
-				addVertex('editors/images/triangle.gif', 40, 40, 'shape=triangle');
-				addVertex('editors/images/cylinder.gif', 40, 40, 'shape=cylinder');
-				addVertex('editors/images/actor.gif', 30, 40, 'shape=actor');
-				toolbar.addLine();
-				
-				var button = mxUtils.button('Create toolbar entry from selection', function(evt)
+
+				addVertex('editors/images/shape-kaishi.png', 100, 40, 'shape=rounded;rounded=1');
+				addVertex('editors/images/shape-fangyin.png', 100, 40, 'shape=rounded;rounded=1');
+				addVertex('editors/images/shape-caidan.png', 100, 40, 'shape=rounded;rounded=1');
+				addVertex('editors/images/shape-zhuanjie.png', 100, 40, 'shape=rounded;rounded=1');
+				addVertex('editors/images/shape-shouhao.png', 100, 40, 'shape=rounded;rounded=1');
+				addVertex('editors/images/shape-shibie.png', 100, 40, 'shape=rounded;rounded=1');
+				addVertex('editors/images/shape-panduan.png', 100, 40, 'shape=rounded;rounded=1');
+				addVertex('editors/images/shape-ziliucheng.png', 100, 40, 'shape=rounded;rounded=1');
+				addVertex('editors/images/shape-guaduan.png', 100, 40, 'shape=rounded;rounded=1');
+
+				var button = mxUtils.button('开始', function(evt)
 				{
 					if (!graph.isSelectionEmpty())
 					{
 						// Creates a copy of the selection array to preserve its state
 						var cells = graph.getSelectionCells();
 						var bounds = graph.getView().getBounds(cells);
-						
+
 						// Function that is executed when the image is dropped on
 						// the graph. The cell argument points to the cell under
 						// the mousepointer if there is one.
 						var funct = function(graph, evt, cell)
 						{
 							graph.stopEditing(false);
-			
+
 							var pt = graph.getPointForEvent(evt);
 							var dx = pt.x - bounds.x;
 							var dy = pt.y - bounds.y;
-							
+
 							graph.setSelectionCells(graph.importCells(cells, dx, dy, cell));
 						}
-			
+
 						// Creates the image which is used as the drag icon (preview)
 						var img = toolbar.addMode(null, 'editors/images/outline.gif', funct);
 						mxUtils.makeDraggable(img, graph, funct);
@@ -146,10 +232,14 @@
 				});
 
 				button.style.position = 'absolute';
+				button.style.background = 'url("editors/images/fangyin.png") no-repeat';
 				button.style.left = '2px';
 				button.style.top = '2px';
-				
+				button.style.width = '60px';
+				button.style['text-align'] = 'right';
+
 				document.body.appendChild(button);
+
 			}
 		}
 
@@ -179,6 +269,18 @@
 </head>
 
 <!-- Calls the main function after the page has loaded. Container is dynamically created. -->
-<body onload="main();">
+<body onload="main();" style="margin:0px;height:100%;">
+<table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td id="toolbar" height="80px" style="background:#7F7F7F;padding:10px;">
+		</td>
+	</tr>
+	<tr>
+		<td width="100%">
+			<div id="graph" style="overflow:auto;width:100%;height:100%;">
+			</div>
+		</td>
+	</tr>
+</table>
 </body>
 </html>
