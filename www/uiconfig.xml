@@ -1,0 +1,41 @@
+<mxEditor>
+	<ui>
+		<add as="graph" element="graph"/>
+		<add as="toolbar" element="toolbox"/>
+	</ui>
+	<Array as="templates">
+		<add as="myFirstTemplate">
+			<Rect label="Rectangle" href="">
+				<mxCell vertex="1">
+					<mxGeometry as="geometry" width="80" height="40"/>
+				</mxCell>
+			</Rect>
+		</add>
+	</Array>
+	<Array as="actions">
+		<add as="myFirstAction"><![CDATA[
+			function (editor, cell)
+			{
+				var encoder = new mxCodec();
+				var node = encoder.encode(editor.graph.getModel());
+				mxUtils.popup(mxUtils.getPrettyXml(node), true);
+			}
+		]]></add>
+
+		<add as="delete"><![CDATA[
+			function (editor, cell)
+			{
+				console.log(editor, cell);
+			}
+		]]></add>
+	</Array>
+	<mxDefaultToolbar as="toolbar">
+		<add as="Gear" template="myFirstTemplate" style="rounded=1" icon="editors/images/server.png"/>
+		<add as="Earth" template="myFirstTemplate" style="shape=ellipse" icon="editors/images/earth.png"/>
+	</mxDefaultToolbar>
+	<mxDefaultPopupMenu as="popupHandler">
+		<add as="编辑节点" action="myFirstAction"/>
+		<separator/>
+		<add as="删除节点及相关连线" action="delete" if="cell"/>
+	</mxDefaultPopupMenu>
+</mxEditor>

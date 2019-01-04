@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<button onclick="submit1()">https://www.baidu.com/</button><br><br>
+
+<button onclick="submit2()">http://172.16.0.11:9091/cors1/date</button><br><br>
+<button onclick="submit3()">JSONP 解决跨域</button><br><br><br>
+
+<textarea cols="50" rows="3" id="jsonpdata"></textarea><br><br><br>
+<button onclick="submit4()">nodejs 代理</button><br><br><br>
+
+<!--<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>-->
+<script src="../jquery-3.3.1.js"></script>
+<script>
+    function submit1() {
+        $.ajax({
+            url: "https://www.baidu.com/",
+            success(resp){
+                alert(resp);
+            },
+        })
+    }
+
+    function submit2() {
+        $.ajax({
+            url: "http://172.16.0.11:9091/cors1/date",
+            success(resp){
+                alert(resp);
+            },
+        })
+    }
+
+
+
+    function submit3() {
+        $("head").append("<script src='http://172.16.0.11:9091/cors1/date?callback=jsonpData'><\/script>");
+    }
+    
+    function jsonpData(data) {
+        $("#jsonpdata").val(JSON.stringify(data));
+    }
+
+
+
+    function submit4() {
+        $.ajax({
+            url: "http://172.16.0.11:8111/cors1/date",
+            success(resp){
+                alert(resp);
+            },
+        })
+    }
+
+
+</script>
+</body>
+</html>
