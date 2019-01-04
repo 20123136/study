@@ -1,0 +1,104 @@
+<mxEditor>
+	<ui>
+		<add as="graph" element="graph"/>
+		<add as="toolbar" element="toolbox"/>
+	</ui>
+	<Array as="templates">
+		<add as="kaishiTemplate">
+			<开始 label="Rectangle" href="">
+				<mxCell vertex="1">
+					<mxGeometry as="geometry" width="80" height="40"/>
+				</mxCell>
+			</开始>
+		</add>
+
+		<add as="fangyinTemplate">
+			<放音 label="Rectangle" href="">
+				<mxCell vertex="1">
+					<mxGeometry as="geometry" width="80" height="40"/>
+				</mxCell>
+			</放音>
+		</add>
+
+		<add as="caidanTemplate">
+			<菜单 label="Rectangle" href="">
+				<mxCell vertex="1">
+					<mxGeometry as="geometry" width="80" height="40"/>
+				</mxCell>
+			</菜单>
+		</add>
+
+		<add as="zhuanjieTemplate">
+			<转接 label="Rectangle" href="">
+				<mxCell vertex="1">
+					<mxGeometry as="geometry" width="80" height="40"/>
+				</mxCell>
+			</转接>
+		</add>
+
+		<add as="shouhaoTemplate">
+			<收号 label="Rectangle" href="">
+				<mxCell vertex="1">
+					<mxGeometry as="geometry" width="80" height="40"/>
+				</mxCell>
+			</收号>
+		</add>
+
+		<add as="shibieTemplate">
+			<识别 label="Rectangle" href="">
+				<mxCell vertex="1">
+					<mxGeometry as="geometry" width="80" height="40"/>
+				</mxCell>
+			</识别>
+		</add>
+
+		<add as="panduanTemplate">
+			<判断 label="Rectangle" href="">
+				<mxCell vertex="1">
+					<mxGeometry as="geometry" width="80" height="40"/>
+				</mxCell>
+			</判断>
+		</add>
+
+		<add as="ziliuchengTemplate">
+			<子流程 label="Rectangle" href="">
+				<mxCell vertex="1">
+					<mxGeometry as="geometry" width="80" height="40"/>
+				</mxCell>
+			</子流程>
+		</add>
+
+		<add as="guaduanTemplate">
+			<挂断 label="Rectangle" href="">
+				<mxCell vertex="1">
+					<mxGeometry as="geometry" width="80" height="40"/>
+				</mxCell>
+			</挂断>
+		</add>
+	</Array>
+	<Array as="actions">
+		<add as="eidtNode"><![CDATA[
+			function (editor, cell)
+			{
+				console.log(editor, cell);
+			}
+		]]></add>
+
+	</Array>
+	<mxDefaultToolbar as="toolbar">
+		<add as="开始" template="kaishiTemplate" style="rounded=1" icon="editors/images/shape-kaishi.png"/>
+		<add as="放音" template="fangyinTemplate" style="rounded=1" icon="editors/images/shape-fangyin.png"/>
+		<add as="菜单" template="caidanTemplate" style="rounded=1" icon="editors/images/shape-caidan.png"/>
+		<add as="转接" template="zhuanjieTemplate" style="rounded=1" icon="editors/images/shape-zhuanjie.png"/>
+		<add as="收号" template="shouhaoTemplate" style="rounded=1" icon="editors/images/shape-shouhao.png"/>
+		<add as="识别" template="shibieTemplate" style="rounded=1" icon="editors/images/shape-shibie.png"/>
+		<add as="判断" template="panduanTemplate" style="rounded=1" icon="editors/images/shape-panduan.png"/>
+		<add as="子流程" template="ziliuchengTemplate" style="rounded=1" icon="editors/images/shape-ziliucheng.png"/>
+		<add as="挂断" template="guaduanTemplate" style="rounded=1" icon="editors/images/shape-guaduan.png"/>
+	</mxDefaultToolbar>
+	<mxDefaultPopupMenu as="popupHandler">
+		<add as="编辑节点" action="eidtNode" if="cell"/>
+		<separator/>
+		<add as="删除节点及相关连线" action="delete" if="cell"/>
+	</mxDefaultPopupMenu>
+</mxEditor>
