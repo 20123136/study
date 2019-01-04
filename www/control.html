@@ -229,16 +229,13 @@
                 // Adds cells to the model in a single step
                 graph.getModel().beginUpdate();
 
-
+                // 一个个节点
                 try
                 {
-
-                    var v3 = graph.insertVertex(parent, null,obj, 180, 60, 120, 60);
-
-
                     var v1 = graph.insertVertex(parent, null, 'Hello,', 20, 20, 120, 60);
-                    var v2 = graph.insertVertex(parent, null, 'World!', 200, 180, 120, 60);
+                    var v2 = graph.insertVertex(parent, null, 'World!', 50, 180, 120, 60);
                     var e1 = graph.insertEdge(parent, null, '', v1, v2);
+                    var v3 = graph.insertVertex(parent, null,obj, 180, 60, 120, 60);
                 }
                 finally
                 {
