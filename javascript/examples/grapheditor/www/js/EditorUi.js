@@ -69,8 +69,6 @@ EditorUi = function(editor, container, lightbox)
 	// Disables text selection while not editing and no dialog visible
 	if (this.container == document.body)
 	{
-		this.menubarContainer.onselectstart = textEditing;
-		this.menubarContainer.onmousedown = textEditing;
 		this.diagramContainer.onselectstart = textEditing;
 		this.diagramContainer.onmousedown = textEditing;
 		this.sidebarContainer.onselectstart = textEditing;
@@ -2892,7 +2890,6 @@ EditorUi.prototype.refresh = function(sizeDidChange)
 	
 	if (this.menubar != null)
 	{
-		this.menubarContainer.style.height = this.menubarHeight + 'px';
 		tmp += this.menubarHeight;
 	}
 	
@@ -2938,12 +2935,11 @@ EditorUi.prototype.refresh = function(sizeDidChange)
 	
 	if (quirks)
 	{
-		this.menubarContainer.style.width = w + 'px';
 		var sidebarHeight = Math.max(0, h - this.footerHeight - this.menubarHeight - this.toolbarHeight);
 		this.sidebarContainer.style.height = (sidebarHeight - sidebarFooterHeight) + 'px';
 		this.formatContainer.style.height = sidebarHeight + 'px';
 		this.diagramContainer.style.width = (this.hsplit.parentNode != null) ? Math.max(0, w - effHsplitPosition - this.splitSize - fw) + 'px' : w + 'px';
-		this.footerContainer.style.width = this.menubarContainer.style.width;
+		this.footerContainer.style.width = w + 'px';
 		var diagramHeight = Math.max(0, h - this.footerHeight - this.menubarHeight - this.toolbarHeight);
 		
 		if (this.tabContainer != null)
@@ -2997,7 +2993,6 @@ EditorUi.prototype.createTabContainer = function()
  */
 EditorUi.prototype.createDivs = function()
 {
-	this.menubarContainer = this.createDiv('geMenubarContainer');
 	this.sidebarContainer = this.createDiv('geSidebarContainer');
 	this.formatContainer = this.createDiv('geSidebarContainer geFormatContainer');
 	this.diagramContainer = this.createDiv('geDiagramContainer');
@@ -3006,9 +3001,6 @@ EditorUi.prototype.createDivs = function()
 	this.hsplit.setAttribute('title', mxResources.get('collapseExpand'));
 
 	// Sets static style for containers
-	this.menubarContainer.style.top = '0px';
-	this.menubarContainer.style.left = '0px';
-	this.menubarContainer.style.right = '0px';
 	this.sidebarContainer.style.left = '0px';
 	this.formatContainer.style.right = '0px';
 	this.formatContainer.style.zIndex = '1';
@@ -3050,11 +3042,7 @@ EditorUi.prototype.createUi = function()
 {
 	// Creates menubar
 	this.menubar = (this.editor.chromeless) ? null : this.menus.createMenubar(this.createDiv('geMenubar'));
-	
-	if (this.menubar != null)
-	{
-		this.menubarContainer.appendChild(this.menubar.container);
-	}
+
 	
 	// Adds status bar in menubar
 	if (this.menubar != null)
@@ -3071,7 +3059,6 @@ EditorUi.prototype.createUi = function()
 		this.menubar.container.appendChild(this.statusContainer);
 		
 		// Inserts into DOM
-		this.container.appendChild(this.menubarContainer);
 	}
 
 	// Creates the sidebar
@@ -4202,7 +4189,7 @@ EditorUi.prototype.destroy = function()
 		this.destroyFunctions = null;
 	}
 	
-	var c = [this.menubarContainer, this.sidebarContainer,
+	var c = [this.sidebarContainer,
 	         this.formatContainer, this.diagramContainer, this.footerContainer,
 	         this.chromelessToolbar, this.hsplit, this.sidebarFooterContainer,
 	         this.layersDialog];
