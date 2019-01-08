@@ -1784,7 +1784,8 @@ PageSetupDialog.getFormats = function()
 				// Generates the SVG required for drawing the dynamic grid
 				image = unescape(encodeURIComponent(this.createSvgGrid(gridColor)));
 				image = (window.btoa) ? btoa(image) : Base64.encode(image, true);
-				image = 'url(' + 'data:image/svg+xml;base64,' + image + ')'
+				//image = 'url(' + 'data:image/svg+xml;base64,' + image + ')'
+				image = 'url(images/graph-bg.jpg)'
 				phase = graph.gridSize * this.scale * this.gridSteps;
 			}
 			else
